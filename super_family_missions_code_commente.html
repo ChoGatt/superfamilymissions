@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Family Missions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        .child-section {
+            background: #ffffff;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .task {
+            margin: 5px 0;
+        }
+
+        .score {
+            font-weight: bold;
+            color: green;
+        }
+
+        .reset-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>⭐ Super Family Missions ⭐</h1>
+
+    <div id="scoreboard"></div>
+    <div id="childrenTasks"></div>
+    <button class="reset-btn" onclick="resetTasks()">Reset Day</button>
+
+    <script>
+        const children = ["Aurélien", "Clémence", "Gabrielle", "Estelle", "Christian"];
+        const tasks = [
+            { emoji: "🪥", text: "Brush your teeth" },
+            { emoji: "👕", text: "Get dressed" },
+            { emoji: "🧸", text: "Pick up toys" },
+            { emoji: "🍽️", text: "Help set the table" },
+            { emoji: "🛁", text: "Take a bath" }
+        ];
+        const scores = {};
+
+        function createChildSection(name) {
+            scores[name] = 0;
+            const container = document.getElementById("childrenTasks");
+            const section = document.createElement("div");
+            section.className = "child-section";
+
+            const title = document.createElement("h2");
+            title.textContent = name;
+            section.appendChild(title);
+
+            tasks.forEach((task, i) => {
+                const taskDiv = document.createElement("div");
+                taskDiv.className = "task";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = name + "_task_" + i;
+                checkbox.onclick = () => updateScore(name, checkbox.checked);
+
+                const label = document.createElement("label");
+                label.htmlFor = checkbox.id;
+                label.innerText = `${task.emoji} ${task.text}`;
+
+                taskDiv.appendChild(checkbox);
+                taskDiv.appendChild(label);
+                section.appendChild(taskDiv);
+            });
+
+            container.appendChild(section);
+        }
+
+        function updateScore(name, checked) {
+            scores[name] += checked ? 1 : -1;
+            updateScoreboard();
+        }
+
+        function updateScoreboard() {
+            const board = document.getElementById("scoreboard");
+            board.innerHTML = "<h2>⭐ Today's Points ⭐</h2>" + Object.entries(scores).map(([name, score]) =>
+                `<div>${name}: <span class="score">${score}</span></div>`
+            ).join("");
+        }
+
+        function resetTasks() {
+            document.querySelectorAll("input[type=checkbox]").forEach(cb => cb.checked = false);
+            for (let name in scores) { scores[name] = 0; }
+            updateScoreboard();
+        }
+
+        children.forEach(createChildSection);
+        updateScoreboard();
+    </script>
+</body>
+</html>
